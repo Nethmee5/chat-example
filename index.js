@@ -14,7 +14,7 @@ const io = require('socket.io')(server,{
 
 const port = process.env.PORT || 3000;
 
-var con , dcon , call, answer , error, canvas , chat = [] ;
+var con , dcon , call, answer , error, canvas , chatchatMessages = [] ;
 io.on('connection', (socket) => {
  	console.log('Client connected');
 
@@ -51,9 +51,17 @@ io.on('connection', (socket) => {
 		io.emit('chat message', msg);
 		chat.push(msg);
 	  });
+	socket.on('chat-message-2',(msg)=> {
+		var {sender,message,time}=msg;
+		io.emit('chat-message-2', msg);
+		chatMessages.push(msg);
+	  });
 });
 
-
+app.get('/chatmsgs', (req, res) => {
+	res.send("./"+  req.body +"\n"+ "chat data- "+ chatMessages);
+	
+  });
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
